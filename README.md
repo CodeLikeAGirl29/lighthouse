@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚓ Lighthouse AI: Autonomous PropTech Marketing Suite
 
-## Getting Started
+**Lighthouse AI** is a high-performance marketing and analysis engine designed for the modern real estate landscape. By bridging the gap between creative storytelling and technical investment logic, Lighthouse transforms a simple property URL into a complete, cross-platform marketing kit in seconds.
 
-First, run the development server:
+### 🚀 Live Demo: [Insert your Vercel Link]
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ec54b8c0-3560-468c-9ce9-a91351a950e0/deploy-status)](https://app.netlify.com/projects/lighthouse-ui/deploys)
+
+---
+
+## 🧠 The Personas
+The engine utilizes a dual-persona architecture to serve different market needs:
+* **Ivy Aria (Professional):** Crafts luxury narratives and lifestyle-driven copy. Focused on emotional resonance and "vibe" for residential buyers.
+* **Ryan Alexander (Executive):** Delivers data-heavy, technical blueprints. Focused on ROI, market positioning, and investment logic.
+
+---
+
+## 🛠️ Tech Stack
+* **Framework:** Next.js 16 (App Router) with Turbopack.
+* **AI Orchestration:** Vercel AI SDK.
+* **Inference:** GPT-OSS 120B running on **Groq LPUs** (Low-latency, high-throughput).
+* **Data Extraction:** **Firecrawl** (Autonomous web scraping and markdown conversion).
+* **Validation:** Zod-based schema enforcement for consistent API responses.
+* **Styling:** Tailwind CSS with a "Glassmorphic" Blueprint aesthetic.
+
+---
+
+## ✨ Key Features
+* **Autonomous Scraping:** Enter a Zillow, Realtor.com, or Redfin URL to automatically ingest property specs and descriptions.
+* **Multi-Channel Output:** Generates official MLS drafts, Instagram captions, and TikTok storyboards simultaneously.
+* **Feature Chip Extraction:** Intelligently identifies top-selling points (e.g., "Quartz Countertops", "New HVAC") for quick-glance UI.
+* **Adaptive UI:** A "Lighthouse" blueprint background with a glassmorphic interface that responds to the selected persona.
+
+---
+
+## 🏁 Quick Start
+
+### 1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/codelikeagirl29/lighthouse.git
+cd lighthouse
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment Variables
+Create a `.env.local` file in the root:
+```env
+OPENAI_API_KEY=your_openai_key
+GROQ_API_KEY=your_groq_key
+FIRECRAWL_API_KEY=your_firecrawl_key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Install and Run
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📈 Roadmap
+- [ ] **Virtual Staging Integration:** Connecting the *Shadow + Slate* canvas engine for automated floorplan visualization.
+- [ ] **Direct Social API:** One-click posting to Instagram and Facebook Business suites.
+- [ ] **PDF Export:** Generation of professional "Listing Flyers" for open house events.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
+Distributed under the MIT License. See `LICENSE` for more information.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Developed by [Lindsey Howard](https://github.com/codelikeagirl29)

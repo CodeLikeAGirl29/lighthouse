@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 export const listingSchema = z.object({
   address: z.string(),
-  // Change this from z.string().url() to just z.string()
-  heroImage: z.string().optional(),
+  // Remove .optional() - GPT-OSS needs these in the 'required' array
+  heroImage: z.string(),
   specs: z.object({
     beds: z.string(),
     baths: z.string(),
@@ -14,5 +14,6 @@ export const listingSchema = z.object({
   instagramCaption: z.string(),
   tiktokScript: z.array(z.string()),
   propertyVibe: z.string(),
-  investmentScore: z.string().optional(),
+  // Change to a regular string so it's technically "required" in the schema
+  investmentScore: z.string(),
 });

@@ -32,13 +32,18 @@ export async function POST(req: Request) {
       schema: listingSchema,
       system: selectedPersona.systemPrompt,
       prompt: `
-    You are an expert at extracting real estate data. 
-    1. Find the URL for the main high-resolution property photo. It usually ends in .jpg or .webp and is often in the 'media' or 'images' section of the data.
-    2. Extract the price, beds, baths, and square footage.
-    3. Generate the marketing suite based on this data:
+    ANALYZE_START:
+    Extract all property details from the data below. 
     
-    PROPERTY DATA:
-    ${context.slice(0, 12000)}
+    CRITICAL_INSTRUCTIONS:
+    - If a value like 'sqft' or 'investmentScore' is missing, provide a professional estimate or 'N/A'.
+    - DO NOT leave any fields null or undefined.
+    - Ensure 'tiktokScript' is an array of strings.
+    - Ensure 'heroImage' is a direct image URL if found, otherwise an empty string.
+
+    PROPERTY_DATA:
+    ${context.slice(0, 10000)}
+    ANALYZE_END
   `,
     });
 
