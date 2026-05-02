@@ -36,11 +36,32 @@ export default function LighthouseDashboard() {
     }
   };
 
+  const handleTwitterShare = () => {
+    const text = encodeURIComponent(`${data.instagramCaption}\n\n#RealEstate #PropTech`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+  };
+
+  const handleInstagramRedirect = () => {
+    // Copy to clipboard first so they can just "Paste" when they get to IG
+    navigator.clipboard.writeText(data.instagramCaption);
+    alert("Caption copied to clipboard! Redirecting to Instagram...");
+    window.open(`https://www.instagram.com/reels/create/`, '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-[#020617] text-slate-300 font-sans selection:bg-indigo-500/30 pb-20">
       <Navbar voice={voice} setVoice={setVoice} />
 
       <main className="max-w-6xl mx-auto p-6 md:p-12">
+        <div className="w-full bg-indigo-950/20 border-b border-indigo-500/10 py-2 overflow-hidden whitespace-nowrap">
+          <div className="flex animate-marquee gap-12 items-center">
+            {['FL_PANHANDLE_INDEX: +2.4%', 'FWB_MEDIAN: $412K', 'DESTIN_DOM: 42_DAYS', 'INTEREST_RATE: 6.8%'].map((stat, i) => (
+              <span key={i} className="text-[9px] font-mono text-indigo-400/60 tracking-[0.3em]">
+                {stat} <span className="text-slate-800 ml-4">|</span>
+              </span>
+            ))}
+          </div>
+        </div>
         {/* Input Area: The Drafting Table */}
         <div className="border-l-2 border-indigo-500/50 pl-6 mb-16">
           <h2 className="text-white font-black text-4xl tracking-tighter uppercase mb-2">
@@ -62,110 +83,133 @@ export default function LighthouseDashboard() {
         </div>
 
         {data && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 animate-in fade-in duration-1000">
+          <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
 
-            {/* Sidebar: Technical Specifications */}
-            <aside className="lg:col-span-4 space-y-8">
-              <div className="border border-slate-800 p-6 bg-slate-900/20 shadow-xl">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-indigo-400 font-black text-xs uppercase tracking-widest">Specifications</h3>
-                  <BarChart3 size={14} className="text-slate-600" />
-                </div>
-
-                <div className="space-y-4 font-mono text-xs mb-8">
-                  <div className="flex justify-between border-b border-slate-800/50 pb-2">
-                    <span className="text-slate-500 uppercase">Status</span>
-                    <span className="text-emerald-400 font-bold">AVAILABLE</span>
-                  </div>
-                  <div className="flex justify-between border-b border-slate-800/50 pb-2">
-                    <span className="text-slate-500 uppercase">Vibe</span>
-                    <span className="text-white uppercase">{data.propertyVibe}</span>
-                  </div>
-                  <div className="flex justify-between border-b border-slate-800/50 pb-2">
-                    <span className="text-slate-500 uppercase">Beds/Baths</span>
-                    <span className="text-white">{data.specs?.beds}/{data.specs?.baths}</span>
-                  </div>
-                </div>
-
-                {/* Feature Chips in Sidebar */}
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {data.highlights?.map((item: string, i: number) => (
-                    <span key={i} className="bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-sm text-[9px] font-bold uppercase tracking-widest border border-indigo-500/20">
-                      {item}
+            {/* 1. MARKET DATA TICKER */}
+            <div className="w-full bg-indigo-950/10 border border-slate-800 py-3 px-6 mb-12 overflow-hidden">
+              <div className="flex justify-between items-center">
+                <div className="flex gap-8 items-center">
+                  {['FL_PANHANDLE: +2.4%', 'FWB_MEDIAN: $412K', 'DOM: 42_DAYS'].map((stat, i) => (
+                    <span key={i} className="text-[9px] font-mono text-indigo-400/60 tracking-[0.3em] uppercase">
+                      {stat}
                     </span>
                   ))}
                 </div>
-
-                {/* Sidebar Image with Floating Tag */}
-                <div className="relative aspect-[4/5] overflow-hidden border border-slate-800 group shadow-2xl bg-slate-950">
-                  <img
-                    src={data.heroImage?.startsWith('http') ? data.heroImage : "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&q=80&w=1200"}
-                    alt={data.address || "Property Preview"}
-                    className="h-full w-full object-cover transition-all duration-1000 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&q=80&w=1200"; }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
-
-                  <div className="absolute top-4 left-4 bg-indigo-600 px-3 py-1 rounded-sm flex items-center gap-2 shadow-lg border border-indigo-400/50">
-                    <Camera size={10} className="text-white" />
-                    <span className="text-[8px] font-black uppercase text-white tracking-widest">
-                      {data.address ? 'VERIFIED_UNIT' : 'PREVIEW_GEN'}
-                    </span>
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-black text-sm uppercase tracking-tighter truncate">
-                      {data.address || "ANALYSIS_PENDING"}
-                    </h3>
-                  </div>
-                </div>
-              </div>
-
-              {/* Technical Metrics Panel */}
-              <div className="p-6 bg-slate-900 border border-slate-800 rounded-sm">
-                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">TikTok Script_</h4>
-                <div className="space-y-4">
-                  {data.tiktokScript?.map((step: string, i: number) => (
-                    <div key={i} className="flex gap-3 items-start">
-                      <span className="text-indigo-500 font-mono text-[10px] mt-1">0{i + 1}</span>
-                      <p className="text-[11px] text-slate-400 leading-tight">{step}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </aside>
-
-            {/* Main Content Area */}
-            <div className="lg:col-span-8 space-y-12">
-              <ContentBox
-                title="Official Narrative Suite"
-                icon={<Home size={16} />}
-                content={data.mlsDescription}
-              />
-
-              <div className="border-t border-slate-800 pt-10">
-                <div className="flex items-center gap-2 text-indigo-500 font-black text-[10px] uppercase tracking-widest mb-6">
-                  <Globe size={16} /> Distribution Channel: Instagram
-                </div>
-                <div className="grid md:grid-cols-4 gap-8 items-start">
-                  <div className="w-full aspect-square bg-gradient-to-br from-indigo-600 to-slate-900 border border-slate-800 rounded-sm flex items-center justify-center p-4">
-                    <BarChart3 className="text-indigo-400 opacity-20 size-12" />
-                  </div>
-                  <div className="md:col-span-3">
-                    <p className="text-slate-400 text-lg leading-relaxed font-serif italic">
-                      "{data.instagramCaption}"
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-6">
-                <StatCard label="Unit_Beds" value={data.specs?.beds || '—'} />
-                <StatCard label="Unit_Baths" value={data.specs?.baths || '—'} />
-                <StatCard label="Unit_Sqft" value={data.specs?.sqft || '—'} />
+                <span className="text-[9px] font-mono text-slate-700 uppercase">Live_Analysis_Active</span>
               </div>
             </div>
 
+            {/* 2. DUAL-TONE COMMAND CENTER */}
+            <div className="grid lg:grid-cols-12 gap-0 border border-slate-800 divide-y lg:divide-y-0 lg:divide-x divide-slate-800 bg-[#020617] shadow-2xl">
+
+              {/* LEFT: THE CREATIVE STUDIO (IVY ARIA MODE) */}
+              <div className="lg:col-span-7 p-8 md:p-12 bg-slate-900/10">
+                <div className="flex items-center justify-between mb-10">
+                  <div className="flex items-center gap-3">
+                    <div className="h-[2px] w-8 bg-indigo-500" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-indigo-500">Creative_Studio</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={handleTwitterShare} className="p-2 border border-slate-800 hover:border-indigo-500 text-slate-500 hover:text-indigo-400 transition-all">
+                      <Share2 size={14} />
+                    </button>
+                    <button onClick={handleInstagramRedirect} className="p-2 border border-slate-800 hover:border-pink-500 text-slate-500 hover:text-pink-400 transition-all">
+                      <Camera size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-12">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h5 className="text-[10px] font-black text-indigo-500/50 uppercase tracking-widest mb-4">IG_Distribution</h5>
+                      <p className="text-sm leading-relaxed text-slate-400 font-sans">{data.instagramCaption}</p>
+                    </div>
+                    <div className="relative aspect-video border border-slate-800 overflow-hidden bg-slate-950">
+                      <img
+                        src={data.heroImage || "https://images.unsplash.com/photo-1600585154340-be6199f7d009"}
+                        className="w-full h-full object-cover opacity-40 hover:opacity-100 transition-opacity duration-700"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-12">
+                    {/* ADD THE CONTENTBOX HERE! */}
+                    <ContentBox
+                      title="Primary_Narrative"
+                      icon={<Home size={14} />}
+                      content={data.mlsDescription}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT: THE STRATEGY LAB (RYAN ALEXANDER MODE) */}
+              <div className="lg:col-span-5 p-8 md:p-12 bg-black/20">
+                <div className="flex items-center gap-3 mb-10">
+                  <div className="h-[2px] w-8 bg-slate-700" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500">Strategy_Lab</span>
+                </div>
+
+                <div className="space-y-10">
+                  {/* Market Comparison Section */}
+                  <div className="border-l-2 border-indigo-500/30 pl-6 group">
+                    <h4 className="text-[10px] font-bold text-indigo-400 uppercase mb-3 tracking-widest group-hover:text-indigo-300 transition-colors">Competitive_Edge</h4>
+                    <p className="text-sm text-slate-400 leading-relaxed font-mono tracking-tight">
+                      {data.competitiveEdge || "Extracting unique value propositions..."}
+                    </p>
+                  </div>
+
+                  <div className="border-l-2 border-emerald-500/30 pl-6 group">
+                    <h4 className="text-[10px] font-bold text-emerald-400 uppercase mb-3 tracking-widest group-hover:text-emerald-300 transition-colors">Price_Logic</h4>
+                    <p className="text-sm text-slate-400 leading-relaxed font-mono tracking-tight">
+                      {data.priceAnalysis || "Calculations based on area comps and condition..."}
+                    </p>
+                  </div>
+
+                  {/* Technical Specs Checklist */}
+                  <div className="bg-slate-900/50 p-6 border border-slate-800 shadow-inner">
+                    <div className="grid grid-cols-2 gap-6">
+                      <StatCard label="UNITS_BED" value={data.specs?.beds || '0'} />
+                      <StatCard label="UNITS_BATH" value={data.specs?.baths || '0'} />
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center">
+                      <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">Property_Vibe</span>
+                      <span className="text-[10px] font-mono text-emerald-500 uppercase">{data.propertyVibe}</span>
+                    </div>
+                  </div>
+
+                  {/* TikTok Storyboard */}
+                  <div className="pt-6">
+                    <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Share2 size={12} className="text-indigo-500" /> Content_Sequencing
+                    </h4>
+                    <div className="space-y-4">
+                      {data.tiktokScript?.map((step: string, i: number) => (
+                        <div key={i} className="flex gap-4 items-start group">
+                          <span className="text-indigo-500 font-mono text-[10px] bg-indigo-500/5 px-2 py-1 border border-indigo-500/10">0{i + 1}</span>
+                          <p className="text-[11px] text-slate-500 leading-tight group-hover:text-slate-300 transition-colors">{step}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* 3. SYSTEM FOOTER */}
+            <div className="mt-8 flex justify-between items-center border-t border-slate-900 pt-6">
+              <div className="text-[8px] font-mono text-slate-700 uppercase tracking-widest">
+                Lighthouse_AI // build_version: 3.0.4 // engine: groq_120b
+              </div>
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[8px] font-mono text-slate-600 uppercase">Secure_Link_Established</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </main>

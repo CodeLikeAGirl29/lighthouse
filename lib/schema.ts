@@ -16,4 +16,7 @@ export const listingSchema = z.object({
   propertyVibe: z.string(),
   // Change to a regular string so it's technically "required" in the schema
   investmentScore: z.string(),
+  // Add these to your listingSchema object
+  competitiveEdge: z.string(), // "What makes this property win?"
+  priceAnalysis: z.string(),   // "Is it over/under priced based on the specs?"
 });
