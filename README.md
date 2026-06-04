@@ -2,7 +2,7 @@
 
 **Lighthouse AI** is a high-performance marketing and analysis engine designed for the modern real estate landscape. By bridging the gap between creative storytelling and technical investment logic, Lighthouse transforms a simple property URL into a complete, cross-platform marketing kit in seconds.
 
-### 🚀 Live Demo: [Insert your Vercel Link]
+### 🚀 Live Demo: [here](https://lighthouse-ui.netlify.app/)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/ec54b8c0-3560-468c-9ce9-a91351a950e0/deploy-status)](https://app.netlify.com/projects/lighthouse-ui/deploys)
 
