@@ -18,9 +18,9 @@ export default function Navbar({ voice, setVoice }: NavbarProps) {
       <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-200">
         <a href="#" className="text-purple-400 border-b-2 border-purple-400 pb-1">Dashboard</a>
         <div className="group relative cursor-pointer flex items-center space-x-1 hover:text-white">
-          <span>Property Canvas</span>
+       <a href="/property-canvas" className="hover:text-purple-400 transition"><span>Property Canvas</span></a>
         </div>
-        <a href="#" className="hover:text-white transition">Settings</a>
+        <a href="/settings" className="hover:text-white transition"><span>Settings</span></a>
       </div>
 
       {/* Right Utility & Voice Toggle */}

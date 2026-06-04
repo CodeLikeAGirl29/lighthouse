@@ -21,26 +21,36 @@ export default function LighthouseDashboard() {
     }
 
     setStatus("AGENT_ANALYZING...");
-    try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // <-- THIS WAS MISSING
-        },
+try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ propertyData: input, voice }),
       });
 
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Server Error:", errorText);
-        setStatus("Error: Check server console");
-        setTimeout(() => setStatus(""), 4000);
-        return;
+        // ... (keep your existing error handling here)
       }
 
       const json = await res.json();
-      console.log("DEBUG_AI_PAYLOAD:", json);
+      console.log("DEBUG_AI_PAYLOAD:", json); 
       setData(json);
+
+      // --- ADD THIS NEW BLOCK TO SAVE TO CANVAS ---
+      try {
+        const existing = JSON.parse(localStorage.getItem('lighthouse_canvas') || '[]');
+        const newListing = {
+          id: Date.now().toString(),
+          date: new Date().toLocaleDateString(),
+          input: input, // Save the URL or description they typed
+          data: json    // Save the actual AI output
+        };
+        localStorage.setItem('lighthouse_canvas', JSON.stringify([newListing, ...existing]));
+      } catch (saveErr) {
+        console.error("Failed to save to canvas:", saveErr);
+      }
+      // --------------------------------------------
+
     } catch (err) {
       console.error("Connection Error:", err);
       setStatus("Connection failed");
