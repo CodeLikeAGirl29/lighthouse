@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar";
 export default function LighthouseDashboard() {
   const [input, setInput] = useState("");
   const [voice, setVoice] = useState<"Professional" | "Executive">(
-    "Professional"
+    "Professional",
   );
   const [data, setData] = useState<any>(null);
   const [status, setStatus] = useState("");
@@ -21,10 +21,10 @@ export default function LighthouseDashboard() {
     }
 
     setStatus("AGENT_ANALYZING...");
-try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ propertyData: input, voice }),
       });
 
@@ -33,24 +33,28 @@ try {
       }
 
       const json = await res.json();
-      console.log("DEBUG_AI_PAYLOAD:", json); 
+      console.log("DEBUG_AI_PAYLOAD:", json);
       setData(json);
 
       // --- ADD THIS NEW BLOCK TO SAVE TO CANVAS ---
       try {
-        const existing = JSON.parse(localStorage.getItem('lighthouse_canvas') || '[]');
+        const existing = JSON.parse(
+          localStorage.getItem("lighthouse_canvas") || "[]",
+        );
         const newListing = {
           id: Date.now().toString(),
           date: new Date().toLocaleDateString(),
           input: input, // Save the URL or description they typed
-          data: json    // Save the actual AI output
+          data: json, // Save the actual AI output
         };
-        localStorage.setItem('lighthouse_canvas', JSON.stringify([newListing, ...existing]));
+        localStorage.setItem(
+          "lighthouse_canvas",
+          JSON.stringify([newListing, ...existing]),
+        );
       } catch (saveErr) {
         console.error("Failed to save to canvas:", saveErr);
       }
       // --------------------------------------------
-
     } catch (err) {
       console.error("Connection Error:", err);
       setStatus("Connection failed");
@@ -64,7 +68,7 @@ try {
 
   const handleTwitterShare = () => {
     const text = encodeURIComponent(
-      `${data.instagramCaption}\n\n#RealEstate #PropTech`
+      `${data.instagramCaption}\n\n#RealEstate #PropTech`,
     );
     window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
   };
@@ -86,24 +90,27 @@ try {
       <Navbar voice={voice} setVoice={setVoice} />
 
       {/* Left Pinned Social Media Sidebar */}
-      <div className="fixed left-8 bottom-12 z-40 hidden lg:flex flex-col items-center space-y-8 text-xs font-semibold text-gray-300">
+      <div className="fixed left-4 bottom-12 z-40 hidden lg:flex flex-col items-center space-y-8 text-xs font-semibold text-gray-300">
         <span className="transform -rotate-90 origin-left translate-x-[6px] -translate-y-12 whitespace-nowrap tracking-widest uppercase text-[11px] opacity-80">
           Lighthouse OS // V3
         </span>
         <div className="w-[1px] h-12 bg-white/40 !mt-8"></div>
         <a
-          href="#"
+          href="https://instagram.com/fiercely.lindseyy"
           className="hover:text-purple-400 transition font-mono text-sm"
         >
           in
         </a>
         <a
-          href="#"
+          href="https://linkedin.com/in/lindsey-howard"
           className="hover:text-purple-400 transition font-mono text-sm"
         >
           IG
         </a>
-        <a href="#" className="hover:text-purple-400 transition text-sm">
+        <a
+          href="https://lindseyk.dev"
+          className="hover:text-purple-400 transition text-sm"
+        >
           🌐
         </a>
       </div>
@@ -257,7 +264,7 @@ try {
                         src={
                           data.heroImage
                             ? `/api/image-proxy?url=${encodeURIComponent(
-                                data.heroImage
+                                data.heroImage,
                               )}`
                             : "https://images.unsplash.com/photo-1600585154340-be6199f7d009"
                         }
