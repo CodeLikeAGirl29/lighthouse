@@ -6,9 +6,6 @@ import Navbar from "../components/Navbar";
 
 export default function LighthouseDashboard() {
   const [input, setInput] = useState("");
-  const [voice, setVoice] = useState<"Professional" | "Executive">(
-    "Professional",
-  );
   const [data, setData] = useState<any>(null);
   const [status, setStatus] = useState("");
 
@@ -25,7 +22,7 @@ export default function LighthouseDashboard() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ propertyData: input, voice }),
+        body: JSON.stringify({ propertyData: input }),
       });
 
       if (!res.ok) {
@@ -87,7 +84,7 @@ export default function LighthouseDashboard() {
           "linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80')",
       }}
     >
-      <Navbar voice={voice} setVoice={setVoice} />
+      <Navbar />
 
       {/* Left Pinned Social Media Sidebar */}
       <div className="fixed left-4 bottom-12 z-40 hidden lg:flex flex-col items-center space-y-8 text-xs font-semibold text-gray-300">
@@ -149,7 +146,7 @@ export default function LighthouseDashboard() {
             <p className="text-white font-semibold text-lg mb-4 flex justify-between items-center">
               <span>What are you looking to analyze?</span>
               <span className="text-xs font-mono text-purple-300 opacity-70">
-                ENTRY_ID: {voice.toUpperCase()}_ENGINE
+                ENTRY_ID: ANALYSIS_ENGINE
               </span>
             </p>
 
@@ -166,11 +163,7 @@ export default function LighthouseDashboard() {
                       generate();
                     }
                   }}
-                  placeholder={
-                    voice === "Professional"
-                      ? "Paste Zillow/Redfin URL or describe the dream lifestyle..."
-                      : "Input raw MLS data or property URL..."
-                  }
+                  placeholder="Paste a Zillow/Redfin/Realtor.com URL or describe the property..."
                   className="w-full bg-white/90 text-gray-900 h-12 px-4 appearance-none text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder:text-gray-500 shadow-inner"
                 />
               </div>
