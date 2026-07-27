@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const listingSchema = z.object({
   address: z.string(),
@@ -18,5 +18,9 @@ export const listingSchema = z.object({
   investmentScore: z.string(),
   // Add these to your listingSchema object
   competitiveEdge: z.string(), // "What makes this property win?"
-  priceAnalysis: z.string(),   // "Is it over/under priced based on the specs?"
+  priceAnalysis: z.string(), // "Is it over/under priced based on the specs?"
 });
+
+// The shape of the AI's generated output, inferred straight from the schema
+// above so the two can never drift out of sync.
+export type ListingData = z.infer<typeof listingSchema>;

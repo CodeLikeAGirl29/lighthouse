@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Sparkles, Share2, Camera, Home, MapPin } from "lucide-react";
 import Navbar from "../components/Navbar";
 import BeaconSweep from "../components/BeaconSweep";
+import ResultsSkeleton from "../components/ResultsSkeleton";
+import type { ListingData } from "../lib/schema";
 
 export default function LighthouseDashboard() {
   const [input, setInput] = useState("");
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ListingData | null>(null);
   const [status, setStatus] = useState("");
 
   const generate = async () => {
@@ -89,6 +92,7 @@ export default function LighthouseDashboard() {
   };
 
   const handleTwitterShare = () => {
+    if (!data) return;
     const text = encodeURIComponent(
       `${data.instagramCaption}\n\n#RealEstate #PropTech`,
     );
@@ -96,6 +100,7 @@ export default function LighthouseDashboard() {
   };
 
   const handleInstagramRedirect = () => {
+    if (!data) return;
     navigator.clipboard.writeText(data.instagramCaption);
     alert("Caption copied to clipboard! Redirecting to Instagram...");
     window.open(`https://www.instagram.com/reels/create/`, "_blank");
@@ -156,8 +161,8 @@ export default function LighthouseDashboard() {
 
         {/* Dynamic Widget Grid Container */}
         <div
-          className={`w-full max-w-5xl transition-all duration-700 ${
-            data ? "mt-8" : "mt-12"
+          className={`w-full transition-all duration-700 ${
+            data || isAnalyzing ? "mt-8" : "mt-12"
           }`}
         >
           {/* Tab Headings */}
@@ -223,7 +228,8 @@ export default function LighthouseDashboard() {
         </div>
 
         {/* RESULTS RENDER BLOCK */}
-        {data && (
+        {isAnalyzing && <ResultsSkeleton />}
+        {data && !isAnalyzing && (
           <div className="mt-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             {/* Market Data Ticker */}
             <div className="w-full bg-panel border border-steel/15 py-3 px-6 mb-8 overflow-hidden">
@@ -292,9 +298,15 @@ export default function LighthouseDashboard() {
                             ? `/api/image-proxy?url=${encodeURIComponent(
                                 data.heroImage,
                               )}`
-                            : "https://images.unsplash.com/photo-1600585154340-be6199f7d009"
+                            : "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=1200&q=80"
                         }
                         alt="Hero shot of the analyzed property"
+                        onError={(e) => {
+                          const img = e.currentTarget;
+                          img.onerror = null; // prevent a loop if the fallback also fails
+                          img.src =
+                            "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=1200&q=80";
+                        }}
                         className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-700"
                       />
                     </div>
@@ -349,11 +361,11 @@ export default function LighthouseDashboard() {
                         value={data.specs?.baths || "0"}
                       />
                     </div>
-                    <div className="mt-4 pt-4 border-t border-steel/15 flex justify-between items-center">
-                      <span className="text-[9px] font-mono text-steel uppercase tracking-widest">
+                    <div className="mt-4 pt-4 border-t border-steel/15">
+                      <span className="block text-[9px] font-mono text-steel uppercase tracking-widest mb-1.5">
                         Property_Vibe
                       </span>
-                      <span className="text-[11px] font-bold text-beacon uppercase font-mono">
+                      <span className="text-[11px] font-bold text-beacon uppercase font-mono leading-relaxed">
                         {data.propertyVibe}
                       </span>
                     </div>
@@ -388,7 +400,7 @@ export default function LighthouseDashboard() {
 }
 
 // Sub-components
-function StatCard({ label, value }: { label: string; value: any }) {
+function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-abyss p-4 border border-steel/15 hover:border-beacon/50 transition-all">
       <span className="block text-[9px] uppercase tracking-[0.2em] text-steel font-bold mb-1 font-mono">
@@ -405,7 +417,7 @@ function ContentBox({
   content,
 }: {
   title: string;
-  icon: any;
+  icon: ReactNode;
   content: string;
 }) {
   return (

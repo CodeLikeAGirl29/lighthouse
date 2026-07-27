@@ -11,9 +11,17 @@ import {
   BedDouble,
   Bath,
 } from "lucide-react";
+import type { ListingData } from "@/lib/schema";
+
+interface SavedListing {
+  id: string;
+  date: string;
+  input: string;
+  data: ListingData;
+}
 
 export default function PropertyCanvas() {
-  const [savedProperties, setSavedProperties] = useState<any[]>([]);
+  const [savedProperties, setSavedProperties] = useState<SavedListing[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
   // Load saved properties on mount
@@ -86,7 +94,7 @@ export default function PropertyCanvas() {
               // Ensure we use the proxy for saved images too
               const imageUrl = prop.data.heroImage
                 ? `/api/image-proxy?url=${encodeURIComponent(prop.data.heroImage)}`
-                : "https://images.unsplash.com/photo-1600585154340-be6199f7d009";
+                : "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=800&q=80";
 
               // Safely format the input string so it fits nicely as a title
               const displayTitle =
@@ -104,6 +112,12 @@ export default function PropertyCanvas() {
                     <img
                       src={imageUrl}
                       alt={displayTitle || "Saved property"}
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        img.onerror = null;
+                        img.src =
+                          "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=800&q=80";
+                      }}
                       className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                     />
                     <div className="absolute top-4 right-4 bg-abyss/90 backdrop-blur-md px-3 py-1 border border-steel/15 text-[10px] font-mono text-foam tracking-widest uppercase">
