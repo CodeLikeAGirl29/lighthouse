@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const NAV_LINKS = [
   { href: "/", label: "Dashboard" },
@@ -10,8 +10,22 @@ const NAV_LINKS = [
   { href: "/settings", label: "Settings" },
 ];
 
-export default function Navbar() {
+export default function Navbar({
+  onNewListing,
+}: {
+  /** Called instead of navigating, when already on the Dashboard. */
+  onNewListing?: () => void;
+}) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleNewListing = () => {
+    if (pathname === "/" && onNewListing) {
+      onNewListing();
+    } else {
+      router.push("/");
+    }
+  };
 
   return (
     <nav className="absolute top-0 left-0 w-full z-10 flex items-center justify-between px-6 md:px-12 py-6 bg-gradient-to-b from-abyss/90 to-transparent">
@@ -46,7 +60,10 @@ export default function Navbar() {
 
       {/* Right Utility */}
       <div className="flex items-center space-x-6 text-sm font-medium">
-        <button className="bg-beacon hover:brightness-110 transition text-abyss px-5 py-2.5 rounded shadow-lg text-sm font-bold tracking-wide hidden sm:block">
+        <button
+          onClick={handleNewListing}
+          className="bg-beacon hover:brightness-110 transition text-abyss px-5 py-2.5 rounded shadow-lg text-sm font-bold tracking-wide hidden sm:block"
+        >
           + New Listing
         </button>
       </div>

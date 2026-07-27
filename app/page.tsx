@@ -108,11 +108,17 @@ export default function LighthouseDashboard() {
 
   const isAnalyzing = status === "AGENT_ANALYZING...";
 
+  const resetForm = () => {
+    setInput("");
+    setData(null);
+    setStatus("");
+  };
+
   return (
     <main className="relative min-h-screen w-full overflow-x-hidden flex flex-col justify-start bg-abyss font-sans">
       <BeaconSweep active={isAnalyzing} />
 
-      <Navbar />
+      <Navbar onNewListing={resetForm} />
 
       {/* Left Pinned Social Rail */}
       <div className="fixed left-6 bottom-10 z-10 hidden lg:flex flex-col items-start gap-5 text-xs font-semibold text-steel">
