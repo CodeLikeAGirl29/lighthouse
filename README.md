@@ -42,7 +42,6 @@ cd lighthouse
 Create a `.env.local` file in the root:
 
 ```env
-OPENAI_API_KEY=your_openai_key
 GROQ_API_KEY=your_groq_key
 FIRECRAWL_API_KEY=your_firecrawl_key
 ```

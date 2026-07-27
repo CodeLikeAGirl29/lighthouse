@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dns from "node:dns/promises";
 import net from "node:net";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Runs on the Node.js runtime (not edge) so we can do DNS resolution below.
 export const runtime = "nodejs";
@@ -8,6 +9,8 @@ export const runtime = "nodejs";
 const MAX_REDIRECTS = 3;
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_BYTES = 10 * 1024 * 1024; // 10MB — plenty for a listing photo
+const RATE_LIMIT = 60; // images load in bursts on a page, so allow more headroom
+const RATE_WINDOW_MS = 60_000;
 
 /**
  * True if the given IP address is loopback, private, link-local, or
@@ -81,6 +84,20 @@ async function assertSafeUrl(rawUrl: string): Promise<URL> {
 }
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rateLimit = checkRateLimit(
+    `image-proxy:${ip}`,
+    RATE_LIMIT,
+    RATE_WINDOW_MS
+  );
+  if (!rateLimit.allowed) {
+    const retryAfterSec = Math.ceil((rateLimit.resetAt - Date.now()) / 1000);
+    return new NextResponse("Too many requests", {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSec) },
+    });
+  }
+
   const rawUrl = req.nextUrl.searchParams.get("url");
 
   if (!rawUrl) {

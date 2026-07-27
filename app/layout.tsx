@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
-import { Inter, Pacifico } from "next/font/google";
+import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const pacifico = Pacifico({ weight: "400", subsets: ["latin"], variable: "--font-cursive" });
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  axes: ["opsz", "SOFT"],
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "Adventure Atlas",
-  description: "Discover places near you",
+  title: "Lighthouse AI",
+  description:
+    "Turn a property listing into a complete marketing kit — MLS copy, social captions, and more — in seconds.",
 };
 
 export default function RootLayout({
@@ -17,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${pacifico.variable} font-sans antialiased text-white bg-slate-900`}>
+      <body
+        className={`${inter.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased text-foam bg-abyss`}
+      >
         {children}
       </body>
     </html>

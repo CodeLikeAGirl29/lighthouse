@@ -1,80 +1,96 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Maritime night palette — the app's own "lighthouse at night" world. */
+  --abyss: #080c14;
+  /* the night sea/sky — page background */
+  --panel: #0f1826;
+  /* card/panel surface, one step up from abyss */
+  --panel-raised: #14203040;
+  /* translucent overlay panels (glass, but dark-glass not purple-glass) */
+  --foam: #eaf2f8;
+  /* primary text — moonlit white */
+  --steel: #7e93a8;
+  /* muted text, labels, hairline borders */
+  --steel-dim: #7e93a833;
+  /* steel at low opacity, for borders */
+  --beacon: #ffb627;
+  /* the lamp itself — primary accent */
+  --beacon-dim: #ffb62733;
+  --signal: #4fd1c5;
+  /* cool secondary accent — distant water/running lights */
+
+  --background: var(--abyss);
+  --foreground: var(--foam);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-abyss: var(--abyss);
+  --color-panel: var(--panel);
+  --color-foam: var(--foam);
+  --color-steel: var(--steel);
+  --color-beacon: var(--beacon);
+  --color-signal: var(--signal);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Wordmark treatment — replaces the old cursive script with the display face. */
 .heading {
-  font-family: "Great Vibes", cursive;
-  font-size: 2.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
-.lighthouse-bg {
-  background-color: #dbe0e5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' width='80' height='80'%3E%3Cpath fill='%239298ac' fill-opacity='0.6' d='M14 16H9v-2h5V9.87a4 4 0 1 1 2 0V14h5v2h-5v15.95A10 10 0 0 0 23.66 27l-3.46-2 8.2-2.2-2.9 5a12 12 0 0 1-21 0l-2.89-5 8.2 2.2-3.47 2A10 10 0 0 0 14 31.95V16zm40 40h-5v-2h5v-4.13a4 4 0 1 1 2 0V54h5v2h-5v15.95A10 10 0 0 0 63.66 67l-3.47-2 8.2-2.2-2.88 5a12 12 0 0 1-21.02 0l-2.88-5 8.2 2.2-3.47 2A10 10 0 0 0 54 71.95V56zm-39 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm40-40a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM15 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm40 40a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'%3E%3C/path%3E%3C/svg%3E");
-  background-attachment: fixed;
-  /* Keeps the pattern still while you scroll content */
-}
-
-@keyframes glitch {
-  0% {
-    transform: translate(0);
+/*
+ * The Beacon Sweep — the app's one signature element. A lighthouse lamp
+ * rotating somewhere off-canvas, top-left. Idle, it's slow and dim (ambient
+ * atmosphere). While the app is actually analyzing a listing, the same
+ * element sweeps fast and bright — the beam doubles as the loading state,
+ * because "the lighthouse is scanning" is literally what's happening.
+ */
+@keyframes beacon-rotate {
+  from {
+    transform: rotate(0deg);
   }
 
-  20% {
-    transform: translate(-2px, 2px);
-  }
-
-  40% {
-    transform: translate(-2px, -2px);
-  }
-
-  60% {
-    transform: translate(2px, 2px);
-  }
-
-  80% {
-    transform: translate(2px, -2px);
-  }
-
-  100% {
-    transform: translate(0);
+  to {
+    transform: rotate(360deg);
   }
 }
 
-.hover-glitch:hover {
-  animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-  text-shadow: 1px 0 #ff00c1, -1px 0 #00fff9;
+.beacon-sweep {
+  position: fixed;
+  inset: -20% -20% -20% -20%;
+  pointer-events: none;
+  z-index: 0;
+  transform-origin: 12% 8%;
+  background: conic-gradient(from 200deg at 12% 8%,
+      transparent 0deg,
+      color-mix(in srgb, var(--beacon) 16%, transparent) 8deg,
+      transparent 20deg,
+      transparent 360deg);
+  animation: beacon-rotate 22s linear infinite;
+  opacity: 0.5;
+  transition: opacity 0.6s ease;
 }
 
-.coastal-mesh {
-  background-color: #f8fafc;
-  background-image:
-    radial-gradient(at 0% 0%, hsla(199, 89%, 48%, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(187, 92%, 69%, 0.1) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, hsla(199, 89%, 48%, 0.05) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, hsla(187, 92%, 69%, 0.1) 0px, transparent 50%);
-  background-attachment: fixed;
+.beacon-sweep.beacon-sweep--active {
+  animation-duration: 2.6s;
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beacon-sweep {
+    animation: none;
+    opacity: 0.3;
+  }
 }
