@@ -69,7 +69,7 @@ body {
 
 .beacon-sweep {
   position: fixed;
-  inset: -20% -20% -20% -20%;
+  inset: -20%;
   pointer-events: none;
   z-index: 0;
   transform-origin: 12% 8%;

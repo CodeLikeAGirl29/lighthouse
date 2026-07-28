@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import BeaconSweep from "@/components/BeaconSweep";
 import {
@@ -12,6 +14,7 @@ import {
   Bath,
 } from "lucide-react";
 import type { ListingData } from "@/lib/schema";
+import { useIsClient } from "@/lib/useIsClient";
 
 interface SavedListing {
   id: string;
@@ -20,22 +23,26 @@ interface SavedListing {
   data: ListingData;
 }
 
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=800&q=80";
+
 export default function PropertyCanvas() {
   const [savedProperties, setSavedProperties] = useState<SavedListing[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
+  const isClient = useIsClient();
 
   // Load saved properties on mount
   useEffect(() => {
-    setIsMounted(true);
+    if (!isClient) return;
     try {
       const stored = localStorage.getItem("lighthouse_canvas");
       if (stored) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable client-side; syncing it into state after mount is exactly what this effect is for.
         setSavedProperties(JSON.parse(stored));
       }
     } catch (e) {
       console.error("Error loading canvas data", e);
     }
-  }, []);
+  }, [isClient]);
 
   const deleteProperty = (id: string) => {
     const updated = savedProperties.filter((p) => p.id !== id);
@@ -44,7 +51,7 @@ export default function PropertyCanvas() {
   };
 
   // Prevent hydration errors by not rendering until client-side loads
-  if (!isMounted) return null;
+  if (!isClient) return null;
 
   return (
     <main className="relative min-h-screen w-full bg-abyss font-sans overflow-x-hidden pb-24">
@@ -81,12 +88,12 @@ export default function PropertyCanvas() {
             <p className="text-steel text-lg mb-4">
               No properties analyzed yet.
             </p>
-            <a
+            <Link
               href="/"
               className="inline-block bg-beacon hover:brightness-110 transition text-abyss px-6 py-3 text-sm font-bold shadow-lg"
             >
               Return to Dashboard &rarr;
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -94,7 +101,7 @@ export default function PropertyCanvas() {
               // Ensure we use the proxy for saved images too
               const imageUrl = prop.data.heroImage
                 ? `/api/image-proxy?url=${encodeURIComponent(prop.data.heroImage)}`
-                : "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=800&q=80";
+                : FALLBACK_IMAGE;
 
               // Safely format the input string so it fits nicely as a title
               const displayTitle =
@@ -109,16 +116,17 @@ export default function PropertyCanvas() {
                 >
                   {/* Image Block */}
                   <div className="relative h-56 overflow-hidden bg-abyss">
-                    <img
+                    <Image
                       src={imageUrl}
                       alt={displayTitle || "Saved property"}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       onError={(e) => {
                         const img = e.currentTarget;
                         img.onerror = null;
-                        img.src =
-                          "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=800&q=80";
+                        img.src = FALLBACK_IMAGE;
                       }}
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                      className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                     />
                     <div className="absolute top-4 right-4 bg-abyss/90 backdrop-blur-md px-3 py-1 border border-steel/15 text-[10px] font-mono text-foam tracking-widest uppercase">
                       {prop.data.propertyVibe || "Uncategorized"}

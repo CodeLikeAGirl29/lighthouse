@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   Check,
 } from "lucide-react";
+import { useIsClient } from "@/lib/useIsClient";
 
 const STORAGE_KEY = "lighthouse_settings";
 
@@ -29,21 +30,22 @@ const defaultSettings: LighthouseSettings = {
 
 export default function Settings() {
   const [settings, setSettings] = useState<LighthouseSettings>(defaultSettings);
-  const [isMounted, setIsMounted] = useState(false);
+  const isClient = useIsClient();
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved">("idle");
 
   // Load whatever was saved previously, once we're on the client.
   useEffect(() => {
-    setIsMounted(true);
+    if (!isClient) return;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable client-side; syncing it into state after mount is exactly what this effect is for.
         setSettings({ ...defaultSettings, ...JSON.parse(stored) });
       }
     } catch (e) {
       console.error("Error loading settings", e);
     }
-  }, []);
+  }, [isClient]);
 
   const updateField = (field: keyof LighthouseSettings, value: string) => {
     setSettings((prev) => ({ ...prev, [field]: value }));
@@ -61,7 +63,7 @@ export default function Settings() {
   };
 
   // Prevent hydration mismatches between server render and localStorage-backed state.
-  if (!isMounted) return null;
+  if (!isClient) return null;
 
   return (
     <main className="relative min-h-screen w-full bg-abyss font-sans overflow-x-hidden pb-24">

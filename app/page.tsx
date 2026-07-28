@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Sparkles, Share2, Camera, Home, MapPin } from "lucide-react";
+import { Sparkles, Share2, Camera, Home } from "lucide-react";
 import Navbar from "../components/Navbar";
 import BeaconSweep from "../components/BeaconSweep";
 import ResultsSkeleton from "../components/ResultsSkeleton";
+import Image from "next/image";
 import type { ListingData } from "../lib/schema";
 
 export default function LighthouseDashboard() {
@@ -298,7 +299,7 @@ export default function LighthouseDashboard() {
                       </p>
                     </div>
                     <div className="relative aspect-video border border-steel/15 overflow-hidden bg-abyss shadow-lg">
-                      <img
+                      <Image
                         src={
                           data.heroImage
                             ? `/api/image-proxy?url=${encodeURIComponent(
@@ -307,6 +308,8 @@ export default function LighthouseDashboard() {
                             : "https://images.unsplash.com/photo-1600585154340-be6199f7d009?auto=format&fit=crop&w=1200&q=80"
                         }
                         alt="Hero shot of the analyzed property"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         onError={(e) => {
                           const img = e.currentTarget;
                           img.onerror = null; // prevent a loop if the fallback also fails
