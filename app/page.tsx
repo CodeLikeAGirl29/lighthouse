@@ -6,6 +6,7 @@ import { Sparkles, Share2, Camera, Home } from "lucide-react";
 import Navbar from "../components/Navbar";
 import BeaconSweep from "../components/BeaconSweep";
 import ResultsSkeleton from "../components/ResultsSkeleton";
+import BatchUpload from "../components/BatchUpload";
 import Image from "next/image";
 import type { ListingData } from "../lib/schema";
 
@@ -13,6 +14,7 @@ export default function LighthouseDashboard() {
   const [input, setInput] = useState("");
   const [data, setData] = useState<ListingData | null>(null);
   const [status, setStatus] = useState("");
+  const [activeTab, setActiveTab] = useState<"single" | "batch">("single");
 
   const generate = async () => {
     // Prevent empty submissions from breaking your API
@@ -113,6 +115,7 @@ export default function LighthouseDashboard() {
     setInput("");
     setData(null);
     setStatus("");
+    setActiveTab("single");
   };
 
   return (
@@ -174,64 +177,78 @@ export default function LighthouseDashboard() {
         >
           {/* Tab Headings */}
           <div className="flex space-x-1">
-            <button className="bg-panel border-b-2 border-beacon text-foam font-bold text-xs uppercase tracking-wider px-6 py-3.5 transition font-mono">
+            <button
+              onClick={() => setActiveTab("single")}
+              className={
+                activeTab === "single"
+                  ? "bg-panel border-b-2 border-beacon text-foam font-bold text-xs uppercase tracking-wider px-6 py-3.5 transition font-mono"
+                  : "bg-panel/40 text-steel/60 hover:text-foam font-bold text-xs uppercase tracking-wider px-6 py-3.5 transition font-mono"
+              }
+            >
               Property Data
             </button>
             <button
-              disabled
-              title="Coming soon"
-              className="bg-panel/40 text-steel/50 font-bold text-xs uppercase tracking-wider px-6 py-3.5 transition font-mono cursor-not-allowed"
+              onClick={() => setActiveTab("batch")}
+              className={
+                activeTab === "batch"
+                  ? "bg-panel border-b-2 border-beacon text-foam font-bold text-xs uppercase tracking-wider px-6 py-3.5 transition font-mono"
+                  : "bg-panel/40 text-steel/60 hover:text-foam font-bold text-xs uppercase tracking-wider px-6 py-3.5 transition font-mono"
+              }
             >
-              Batch Upload · Soon
+              Batch Upload
             </button>
           </div>
 
-          {/* Search Console */}
-          <div className="bg-panel p-8 shadow-2xl w-full border border-steel/15">
-            <p className="text-foam font-semibold text-lg mb-4 flex justify-between items-center">
-              <span>What are you looking to analyze?</span>
-              <span className="text-xs font-mono text-steel opacity-80">
-                ENTRY_ID: ANALYSIS_ENGINE
-              </span>
-            </p>
+          {activeTab === "single" ? (
+            /* Search Console */
+            <div className="bg-panel p-8 shadow-2xl w-full border border-steel/15">
+              <p className="text-foam font-semibold text-lg mb-4 flex justify-between items-center">
+                <span>What are you looking to analyze?</span>
+                <span className="text-xs font-mono text-steel opacity-80">
+                  ENTRY_ID: ANALYSIS_ENGINE
+                </span>
+              </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* Main Input Area spanning 3 columns */}
-              <div className="md:col-span-3">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    // Trigger generate on Enter key, but only if it's not already loading
-                    if (e.key === "Enter" && !status) {
-                      generate();
-                    }
-                  }}
-                  placeholder="Paste a Zillow/Redfin/Realtor.com URL or describe the property..."
-                  className="w-full bg-abyss text-foam h-12 px-4 appearance-none text-sm font-medium border border-steel/20 focus:outline-none focus:ring-2 focus:ring-beacon/60 focus:border-beacon/60 placeholder:text-steel/60 shadow-inner"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Main Input Area spanning 3 columns */}
+                <div className="md:col-span-3">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Trigger generate on Enter key, but only if it's not already loading
+                      if (e.key === "Enter" && !status) {
+                        generate();
+                      }
+                    }}
+                    placeholder="Paste a Zillow/Redfin/Realtor.com URL or describe the property..."
+                    className="w-full bg-abyss text-foam h-12 px-4 appearance-none text-sm font-medium border border-steel/20 focus:outline-none focus:ring-2 focus:ring-beacon/60 focus:border-beacon/60 placeholder:text-steel/60 shadow-inner"
+                  />
+                </div>
+
+                {/* Submit Action Button */}
+                <button
+                  onClick={generate}
+                  disabled={!!status}
+                  className="w-full h-12 bg-beacon hover:brightness-110 disabled:bg-steel/30 disabled:cursor-not-allowed transition text-abyss font-bold flex items-center justify-center space-x-2 text-sm shadow-md"
+                >
+                  {status ? (
+                    <span className="animate-pulse tracking-wider text-xs font-mono">
+                      {status}
+                    </span>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Generate</span>
+                    </>
+                  )}
+                </button>
               </div>
-
-              {/* Submit Action Button */}
-              <button
-                onClick={generate}
-                disabled={!!status}
-                className="w-full h-12 bg-beacon hover:brightness-110 disabled:bg-steel/30 disabled:cursor-not-allowed transition text-abyss font-bold flex items-center justify-center space-x-2 text-sm shadow-md"
-              >
-                {status ? (
-                  <span className="animate-pulse tracking-wider text-xs font-mono">
-                    {status}
-                  </span>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    <span>Generate</span>
-                  </>
-                )}
-              </button>
             </div>
-          </div>
+          ) : (
+            <BatchUpload />
+          )}
         </div>
 
         {/* RESULTS RENDER BLOCK */}

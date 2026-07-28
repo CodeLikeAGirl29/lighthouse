@@ -35,7 +35,11 @@
   --color-signal: var(--signal);
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
-  --font-mono: var(--font-mono);
+  /* No monospace face in this palette anymore — the console-y mono labels
+     (ENTRY_ID, tab names, stat tags) now render in the same playful sans,
+     just letter-spaced/uppercased like before, so "font-mono" everywhere
+     in the app picks this up automatically without touching each file. */
+  --font-mono: var(--font-sans);
 }
 
 body {
@@ -43,11 +47,10 @@ body {
   color: var(--foreground);
 }
 
-/* Wordmark treatment — replaces the old cursive script with the display face. */
+/* Wordmark treatment — bouncy display face, weighted up so it reads chunky. */
 .heading {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: 0.01em;
 }
 
 /*

@@ -1,17 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
+import { Open_Sans, Urbanist } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-display",
-  axes: ["opsz", "SOFT"],
-});
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
+const openSans = Open_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const urbanist = Urbanist({ subsets: ["latin"], variable: "--font-display" });
 
 export const metadata: Metadata = {
   title: "Lighthouse AI",
@@ -27,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased text-foam bg-abyss`}
+        className={`${openSans.variable} ${urbanist.variable} font-sans antialiased text-foam bg-abyss`}
       >
         {children}
       </body>
